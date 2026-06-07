@@ -124,13 +124,11 @@ export default function Signup() {
     };
 
     return (
-        <div className="relative flex min-h-screen items-center overflow-x-hidden bg-zinc-100">
+        <div className="relative flex min-h-screen items-center justify-center overflow-x-hidden bg-zinc-100">
             <FallingGridBackground />
-            <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-full max-w-300 -translate-x-1/2 sm:block">
-            </div>
-                <div className="relative mx-auto w-full max-w-200 px-4 sm:px-6 lg:px-8">
-                    <div className="rounded-2xl border border-black/15 bg-white/88 p-10 backdrop-blur-[1.5px]">
-                        <a href="/"><h1 className="text-3xl font-bold">TeamSync</h1></a>
+            <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
+                <div className="rounded-2xl border border-black/15 bg-white/88 p-10 backdrop-blur-[1.5px]">
+                        <a href="/" className="no-underline"><h1 className="text-3xl font-bold">TeamSync</h1></a>
                         <br></br>
                         <p>Create a new account</p>
                         <p className="text-sm text-gray">Already have an account? <a href="/auth/login" className="text-gray-500">Sign in here</a>.</p>

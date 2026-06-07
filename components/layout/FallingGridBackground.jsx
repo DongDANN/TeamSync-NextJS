@@ -18,7 +18,7 @@ export default function FallingGridBackground() {
             {lightColumns.map((column, index) => (
                 <span
                     key={column}
-                    className="ts-falling-light absolute top-[-28%] block w-px bg-linear-to-b from-transparent via-black/80 to-transparent"
+                    className="ts-falling-light absolute top-[-28%] block w-px bg-gradient-to-b from-transparent via-black/80 to-transparent"
                     style={{
                         left: `${column * GRID_SIZE}px`,
                         height: `${140 + (index % 4) * 36}px`,
