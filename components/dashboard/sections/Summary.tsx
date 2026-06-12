@@ -1,4 +1,10 @@
-export default function Summary() {
+import type { TemplateId } from '@/lib/templates'
+
+type SummaryProps = {
+  template?: TemplateId
+}
+
+export default function Summary({ template }: SummaryProps) {
   return (
     <section className="rounded-3xl border border-black/10 bg-white p-6">
       <h2 className="text-xl font-semibold uppercase tracking-[0.12em]">Summary</h2>
@@ -7,5 +13,5 @@ export default function Summary() {
         pending approvals.
       </p>
     </section>
-  );
+  )
 }

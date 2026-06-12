@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import Sidebar, { type SectionKey } from '@/components/dashboard/Sidebar'
+import { type SectionKey, type TemplateId } from '@/lib/templates'
+import Sidebar from '@/components/dashboard/Sidebar'
 import HeaderDashboard from '@/components/dashboard/HeaderDashboard'
 import Summary from '@/components/dashboard/sections/Summary'
 import Backlog from '@/components/dashboard/sections/Backlog'
@@ -13,7 +14,11 @@ import Timeline from '@/components/dashboard/sections/Timeline'
 import Pages from '@/components/dashboard/sections/Pages'
 import Forms from '@/components/dashboard/sections/Forms'
 
-const sectionComponents: Record<SectionKey, React.ComponentType> = {
+type SectionProps = {
+  template?: TemplateId
+}
+
+const sectionComponents: Record<SectionKey, React.ComponentType<SectionProps>> = {
   Summary,
   Backlog,
   Board,
@@ -27,6 +32,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const [selected, setSelected] = useState<SectionKey>('Summary')
   const [userName, setUserName] = useState('Admin User')
+  const [activeTemplate, setActiveTemplate] = useState<TemplateId>('general')
 
   useEffect(() => {
     async function loadUser() {
@@ -54,11 +60,15 @@ export default function DashboardPage() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-white">
-      <Sidebar selected={selected} setSelected={setSelected} />
+      <Sidebar
+        selected={selected}
+        setSelected={setSelected}
+        onActiveTemplateChange={setActiveTemplate}
+      />
       <div className="flex min-w-0 flex-1 flex-col">
         <HeaderDashboard title={selected} userName={userName} />
         <main className="flex-1 overflow-y-auto bg-zinc-50 p-6">
-          <SectionComponent />
+          <SectionComponent template={activeTemplate} />
         </main>
       </div>
     </div>

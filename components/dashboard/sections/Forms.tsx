@@ -1,4 +1,10 @@
-export default function Forms() {
+import type { TemplateId } from '@/lib/templates'
+
+type FormsProps = {
+  template?: TemplateId
+}
+
+export default function Forms({ template }: FormsProps) {
   return (
     <section className="rounded-3xl border border-black/10 bg-white p-6">
       <h2 className="text-xl font-semibold uppercase tracking-[0.12em]">Forms</h2>
@@ -6,5 +12,5 @@ export default function Forms() {
         Build and review intake forms, submissions, and automation rules tied to team workflows.
       </p>
     </section>
-  );
+  )
 }

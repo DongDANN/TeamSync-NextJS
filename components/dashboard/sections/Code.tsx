@@ -1,4 +1,10 @@
-export default function Code() {
+import type { TemplateId } from '@/lib/templates'
+
+type CodeProps = {
+  template?: TemplateId
+}
+
+export default function Code({ template }: CodeProps) {
   return (
     <section className="rounded-3xl border border-black/10 bg-white p-6">
       <h2 className="text-xl font-semibold uppercase tracking-[0.12em]">Code</h2>
@@ -6,5 +12,5 @@ export default function Code() {
         Review pull request status, CI outcomes, and merge readiness for your current development cycle.
       </p>
     </section>
-  );
+  )
 }

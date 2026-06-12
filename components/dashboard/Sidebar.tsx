@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from 'react'
 import {
   FiClock,
   FiPlus,
@@ -12,110 +12,132 @@ import {
   FiFileText,
   FiHome,
   FiList,
-} from "react-icons/fi";
-import { motion } from "framer-motion";
-
-export type SectionKey = "Summary" | "Backlog" | "Board" | "Code" | "Timeline" | "Pages" | "Forms";
+  FiRefreshCw,
+  FiAlertTriangle,
+  FiFolder,
+} from 'react-icons/fi'
+import { motion } from 'framer-motion'
+import { type Project, type SectionKey, TEMPLATES, type TemplateId } from '@/lib/templates'
+import NewProjectModal from './NewProjectModal'
 
 type SidebarProps = {
-  selected?: SectionKey;
-  setSelected?: (section: SectionKey) => void;
-};
+  selected?: SectionKey
+  setSelected?: (section: SectionKey) => void
+  onActiveTemplateChange?: (template: TemplateId) => void
+}
 
 type OptionProps = {
-  Icon: React.ComponentType<{ className?: string }>;
-  title: SectionKey;
-  selected: SectionKey;
-  setSelected: (title: SectionKey) => void;
-  open: boolean;
-  notifs?: number;
-};
+  Icon: React.ComponentType<{ className?: string }>
+  title: SectionKey
+  selected: SectionKey
+  setSelected: (title: SectionKey) => void
+  open: boolean
+  notifs?: number
+}
 
-const Sidebar = ({ selected: controlledSelected, setSelected: controlledSetSelected }: SidebarProps) => {
-  const [open, setOpen] = useState(true);
-  const [internalSelected, setInternalSelected] = useState<SectionKey>("Summary");
-  const [projects, setProjects] = useState([
-    "TeamSync",
-    "Website Revamp",
-    "Mobile App",
-  ]);
-  const [activeProject, setActiveProject] = useState("TeamSync");
-  const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false);
-  const selected = controlledSelected ?? internalSelected;
-  const setSelected = controlledSetSelected ?? setInternalSelected;
+const SECTION_ICONS: Record<SectionKey, React.ComponentType<{ className?: string }>> = {
+  Summary: FiHome,
+  Backlog: FiList,
+  Board: FiColumns,
+  Code: FiCode,
+  Timeline: FiClock,
+  Pages: FiFileText,
+  Forms: FiClipboard,
+}
 
-  const handleSelectProject = (projectName: string) => {
-    setActiveProject(projectName);
-    setIsProjectMenuOpen(false);
-  };
+const TEMPLATE_ICONS: Record<TemplateId, React.ComponentType<{ className?: string }>> = {
+  scrum: FiRefreshCw,
+  kanban: FiColumns,
+  'bug-tracking': FiAlertTriangle,
+  general: FiFolder,
+}
 
-  const handleAddProject = () => {
-    const projectName = `New Project ${projects.length + 1}`;
-    setProjects((prev) => [...prev, projectName]);
-    setActiveProject(projectName);
-    setIsProjectMenuOpen(false);
-  };
+const defaultProjects: Project[] = [
+  { name: 'TeamSync', key: 'TS', template: 'general', lead: '', description: '', access: 'team' },
+  { name: 'Website Revamp', key: 'WR', template: 'kanban', lead: '', description: '', access: 'team' },
+  { name: 'Mobile App', key: 'MA', template: 'scrum', lead: '', description: '', access: 'private' },
+]
+
+const Sidebar = ({ selected: controlledSelected, setSelected: controlledSetSelected, onActiveTemplateChange }: SidebarProps) => {
+  const [open, setOpen] = useState(true)
+  const [internalSelected, setInternalSelected] = useState<SectionKey>('Summary')
+  const [projects, setProjects] = useState<Project[]>(defaultProjects)
+  const [activeProjectKey, setActiveProjectKey] = useState('TS')
+  const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false)
+  const [showNewProjectModal, setShowNewProjectModal] = useState(false)
+
+  const selected = controlledSelected ?? internalSelected
+  const setSelected = controlledSetSelected ?? setInternalSelected
+
+  const activeProject = projects.find((p) => p.key === activeProjectKey) ?? projects[0]
+  const activeTemplate = activeProject ? TEMPLATES[activeProject.template] : null
+  const visibleSections = activeTemplate?.sections ?? (Object.keys(SECTION_ICONS) as SectionKey[])
+
+  useEffect(() => {
+    if (activeProject) onActiveTemplateChange?.(activeProject.template)
+    // Only on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleSelectProject = (projectKey: string) => {
+    setActiveProjectKey(projectKey)
+    setIsProjectMenuOpen(false)
+    const project = projects.find((p) => p.key === projectKey)
+    if (project) onActiveTemplateChange?.(project.template)
+  }
+
+  const handleCreateProject = (project: Project) => {
+    setProjects((prev) => [...prev, project])
+    setActiveProjectKey(project.key)
+    onActiveTemplateChange?.(project.template)
+  }
 
   return (
-    <motion.nav
-      layout
-      className="sticky top-0 z-20 h-screen shrink-0 overflow-hidden border-r border-black/10 bg-white p-3"
-      style={{
-        width: open ? "225px" : "fit-content",
-      }}
-    >
-      <TitleSection
-        open={open}
-        activeProject={activeProject}
-        projects={projects}
-        isProjectMenuOpen={isProjectMenuOpen}
-        setIsProjectMenuOpen={setIsProjectMenuOpen}
-        onSelectProject={handleSelectProject}
-        onAddProject={handleAddProject}
+    <>
+      <motion.nav
+        layout
+        className="sticky top-0 z-20 h-screen shrink-0 overflow-hidden border-r border-black/10 bg-white p-3"
+        style={{ width: open ? '225px' : 'fit-content' }}
+      >
+        <TitleSection
+          open={open}
+          activeProject={activeProject}
+          projects={projects}
+          isProjectMenuOpen={isProjectMenuOpen}
+          setIsProjectMenuOpen={setIsProjectMenuOpen}
+          onSelectProject={handleSelectProject}
+          onOpenNewProject={() => setShowNewProjectModal(true)}
+        />
+
+        <div className="space-y-1">
+          {visibleSections.map((section) => (
+            <Option
+              key={section}
+              Icon={SECTION_ICONS[section]}
+              title={section}
+              selected={selected}
+              setSelected={setSelected}
+              open={open}
+            />
+          ))}
+        </div>
+
+        <ToggleClose open={open} setOpen={setOpen} />
+      </motion.nav>
+
+      <NewProjectModal
+        open={showNewProjectModal}
+        onClose={() => setShowNewProjectModal(false)}
+        onSubmit={handleCreateProject}
+        existingKeys={projects.map((p) => p.key)}
       />
-
-      <div className="space-y-1">
-        <Option Icon={FiHome} title="Summary" selected={selected} setSelected={setSelected} open={open} />
-        <Option Icon={FiList} title="Backlog" selected={selected} setSelected={setSelected} open={open} />
-        <Option
-          Icon={FiColumns}
-          title="Board"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option Icon={FiCode} title="Code" selected={selected} setSelected={setSelected} open={open} />
-        <Option
-          Icon={FiClock}
-          title="Timeline"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={FiFileText}
-          title="Pages"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={FiClipboard}
-          title="Forms"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-      </div>
-
-      <ToggleClose open={open} setOpen={setOpen} />
-    </motion.nav>
-  );
-};
+    </>
+  )
+}
 
 const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProps) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const isActive = selected === title;
+  const [isHovered, setIsHovered] = useState(false)
+  const isActive = selected === title
 
   return (
     <motion.button
@@ -123,7 +145,9 @@ const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProp
       onClick={() => setSelected(title)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative flex h-10 w-full items-center overflow-hidden rounded-md px-1 transition-colors ${isActive ? "text-white" : "text-black/55"}`}
+      className={`relative flex h-10 w-full items-center overflow-hidden rounded-md px-1 transition-colors ${
+        isActive ? 'text-white' : 'text-black/55'
+      }`}
     >
       <motion.span
         initial={false}
@@ -131,12 +155,14 @@ const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProp
           scaleX: isActive || isHovered ? 1 : 0,
           opacity: isActive || isHovered ? 1 : 0,
         }}
-        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+        transition={{ type: 'spring', stiffness: 350, damping: 30 }}
         className="absolute inset-0 z-0 origin-left rounded-md bg-black"
       />
       <motion.div
         layout
-        className={`relative z-10 grid h-full w-10 place-content-center text-lg transition-colors ${isActive || isHovered ? "text-white" : "text-black/55"}`}
+        className={`relative z-10 grid h-full w-10 place-content-center text-lg transition-colors ${
+          isActive || isHovered ? 'text-white' : 'text-black/55'
+        }`}
       >
         <Icon />
       </motion.div>
@@ -146,7 +172,9 @@ const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProp
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.125 }}
-          className={`relative z-10 text-xs font-medium transition-colors ${isActive || isHovered ? "text-white" : "text-black/75"}`}
+          className={`relative z-10 text-xs font-medium transition-colors ${
+            isActive || isHovered ? 'text-white' : 'text-black/75'
+          }`}
         >
           {title}
         </motion.span>
@@ -155,11 +183,8 @@ const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProp
       {notifs && open && (
         <motion.span
           initial={{ scale: 0, opacity: 0 }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-          }}
-          style={{ y: "-50%" }}
+          animate={{ opacity: 1, scale: 1 }}
+          style={{ y: '-50%' }}
           transition={{ delay: 0.5 }}
           className="absolute right-2 top-1/2 z-10 grid size-5 place-content-center rounded-full bg-white text-[10px] font-medium text-black"
         >
@@ -167,18 +192,18 @@ const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProp
         </motion.span>
       )}
     </motion.button>
-  );
-};
+  )
+}
 
 type TitleSectionProps = {
-  open: boolean;
-  activeProject: string;
-  projects: string[];
-  isProjectMenuOpen: boolean;
-  setIsProjectMenuOpen: (open: boolean) => void;
-  onSelectProject: (project: string) => void;
-  onAddProject: () => void;
-};
+  open: boolean
+  activeProject: Project
+  projects: Project[]
+  isProjectMenuOpen: boolean
+  setIsProjectMenuOpen: (open: boolean) => void
+  onSelectProject: (key: string) => void
+  onOpenNewProject: () => void
+}
 
 const TitleSection = ({
   open,
@@ -187,8 +212,10 @@ const TitleSection = ({
   isProjectMenuOpen,
   setIsProjectMenuOpen,
   onSelectProject,
-  onAddProject,
+  onOpenNewProject,
 }: TitleSectionProps) => {
+  const TemplateIcon = TEMPLATE_ICONS[activeProject.template]
+
   return (
     <div className="relative mb-3 border-b border-black/10 pb-3">
       <button
@@ -205,14 +232,21 @@ const TitleSection = ({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.125 }}
             >
-              <span className="block text-xs font-semibold uppercase tracking-[0.18em]">{activeProject}</span>
-              <span className="block text-[11px] text-black/45">Project</span>
+              <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em]">
+                {activeProject.name}
+                <TemplateIcon className="text-black/40" />
+              </span>
+              <span className="flex items-center gap-1 text-[11px] text-black/45">
+                <span className="font-mono text-[10px]">{activeProject.key}</span>
+                <span>·</span>
+                <span>Project</span>
+              </span>
             </motion.div>
           )}
         </div>
         {open && (
           <FiChevronDown
-            className={`mr-2 transition-transform ${isProjectMenuOpen ? "rotate-180" : ""}`}
+            className={`mr-2 transition-transform ${isProjectMenuOpen ? 'rotate-180' : ''}`}
           />
         )}
       </button>
@@ -223,20 +257,29 @@ const TitleSection = ({
           animate={{ opacity: 1, y: 0 }}
           className="absolute left-0 right-0 top-full z-30 mt-2 rounded-xl border border-black/15 bg-white p-1 shadow-[0_16px_30px_-20px_rgba(0,0,0,0.35)]"
         >
-          {projects.map((project) => (
-            <button
-              key={project}
-              type="button"
-              onClick={() => onSelectProject(project)}
-              className={`flex w-full items-center rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors ${project === activeProject ? "bg-black text-white" : "text-black hover:bg-black/5"}`}
-            >
-              {project}
-            </button>
-          ))}
+          {projects.map((project) => {
+            const Icon = TEMPLATE_ICONS[project.template]
+            return (
+              <button
+                key={project.key}
+                type="button"
+                onClick={() => onSelectProject(project.key)}
+                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors ${
+                  project.key === activeProject.key
+                    ? 'bg-black text-white'
+                    : 'text-black hover:bg-black/5'
+                }`}
+              >
+                <Icon className="shrink-0" />
+                <span className="min-w-0 flex-1 truncate">{project.name}</span>
+                <span className="font-mono text-[10px] opacity-60">{project.key}</span>
+              </button>
+            )
+          })}
           <div className="my-1 border-t border-black/10" />
           <button
             type="button"
-            onClick={onAddProject}
+            onClick={onOpenNewProject}
             className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-black transition-colors hover:bg-black/5"
           >
             <FiPlus />
@@ -245,8 +288,8 @@ const TitleSection = ({
         </motion.div>
       )}
     </div>
-  );
-};
+  )
+}
 
 const Logo = () => {
   return (
@@ -266,13 +309,13 @@ const Logo = () => {
         <path d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z" />
       </svg>
     </motion.div>
-  );
-};
+  )
+}
 
 type ToggleCloseProps = {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+  open: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
 
 const ToggleClose = ({ open, setOpen }: ToggleCloseProps) => {
   return (
@@ -283,7 +326,7 @@ const ToggleClose = ({ open, setOpen }: ToggleCloseProps) => {
     >
       <div className="flex items-center p-2">
         <motion.div layout className="grid size-10 place-content-center text-lg">
-          <FiChevronsRight className={`transition-transform ${open && "rotate-180"}`} />
+          <FiChevronsRight className={`transition-transform ${open && 'rotate-180'}`} />
         </motion.div>
         {open && (
           <motion.span
@@ -298,7 +341,7 @@ const ToggleClose = ({ open, setOpen }: ToggleCloseProps) => {
         )}
       </div>
     </motion.button>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

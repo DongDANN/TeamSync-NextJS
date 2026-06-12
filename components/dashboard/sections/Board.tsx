@@ -1,4 +1,10 @@
-export default function Board() {
+import type { TemplateId } from '@/lib/templates'
+
+type BoardProps = {
+  template?: TemplateId
+}
+
+export default function Board({ template }: BoardProps) {
   return (
     <section className="rounded-3xl border border-black/10 bg-white p-6">
       <h2 className="text-xl font-semibold uppercase tracking-[0.12em]">Board</h2>
@@ -6,5 +12,5 @@ export default function Board() {
         Track work in progress, monitor handoffs, and move cards through your active workflow columns.
       </p>
     </section>
-  );
+  )
 }
