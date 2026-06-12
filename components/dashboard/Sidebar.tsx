@@ -89,6 +89,7 @@ const Sidebar = ({ selected: controlledSelected, setSelected: controlledSetSelec
   const handleSelectProject = (projectKey: string) => {
     setActiveProjectKey(projectKey)
     setIsProjectMenuOpen(false)
+    onMobileClose?.()
     const project = projects.find((p) => p.key === projectKey)
     if (project) onActiveTemplateChange?.(project.template)
   }
