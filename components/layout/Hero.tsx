@@ -80,10 +80,16 @@ export default function Hero() {
 				<p className="mb-4 inline-flex rounded-full border border-black/20 px-3 py-1 text-xs uppercase tracking-[0.18em] text-black/70">
 					TEAMSYNC
 				</p>
-				<h1 className="text-[clamp(1.9rem,10vw,6rem)] font-extrabold uppercase leading-[0.9] text-black">
+				<h1
+					className="text-[clamp(1.9rem,10vw,6rem)] font-extrabold uppercase leading-[0.9] text-black"
+					style={{ WebkitTextStroke: '2px white', paintOrder: 'stroke fill' }}
+				>
 					Sync Your Team
 				</h1>
-				<p className="mx-auto mt-5 mb-5 max-w-2xl text-sm text-black/60 sm:mt-6 sm:text-xl">
+				<p
+					className="mx-auto mt-5 mb-5 max-w-2xl text-sm text-black/70 sm:mt-6 sm:text-xl"
+					style={{ WebkitTextStroke: '1px white', paintOrder: 'stroke fill' }}
+				>
 					Build stronger teams with TeamSync - the ultimate collaboration tool for seamless communication, project management, and team bonding. Join our waitlist today and experience the future of teamwork!
 				</p>
 				<Link href="/auth/signup" className="group relative mt-7 w-full overflow-hidden rounded-full border border-black bg-white px-7 py-3 text-sm font-bold uppercase tracking-wider text-black transition sm:mt-8 sm:w-auto no-underline">
