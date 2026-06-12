@@ -59,7 +59,7 @@ export default function DashboardPage() {
   const SectionComponent = sectionComponents[selected]
 
   return (
-    <div className="flex h-screen overflow-hidden bg-white">
+    <div className="flex h-screen overflow-hidden bg-theme-panel">
       <Sidebar
         selected={selected}
         setSelected={setSelected}
@@ -67,7 +67,7 @@ export default function DashboardPage() {
       />
       <div className="flex min-w-0 flex-1 flex-col">
         <HeaderDashboard title={selected} userName={userName} />
-        <main className="flex-1 overflow-y-auto bg-zinc-50 p-6">
+        <main className="flex-1 overflow-y-auto bg-theme-bg p-6">
           <SectionComponent template={activeTemplate} />
         </main>
       </div>

@@ -58,11 +58,11 @@ export default function IssueRow({
   return (
     <Fragment>
       <tr
-        className={`group border-b border-black/5 text-sm transition ${depth > 0 ? 'bg-zinc-100 hover:bg-zinc-200/70' : 'hover:bg-zinc-50/80'}`}
+        className={`group border-b border-theme-border/5 text-sm transition ${depth > 0 ? 'bg-theme-bg hover:bg-theme-fg/5' : 'hover:bg-theme-fg/5'}`}
       >
         {/* ID */}
         <td
-          className={`py-3 font-mono text-xs ${depth > 0 ? 'text-black/30' : 'text-black/40'}`}
+          className={`py-3 font-mono text-xs ${depth > 0 ? 'text-theme-fg/30' : 'text-theme-fg/40'}`}
           style={{ paddingLeft: `${24 + depth * 18}px`, paddingRight: '24px' }}
         >
           <div className="flex items-center gap-2">
@@ -70,7 +70,7 @@ export default function IssueRow({
               <button
                 type="button"
                 onClick={() => onToggleParent(issue.id)}
-                className="rounded p-0.5 text-black/30 transition hover:bg-black/5 hover:text-black"
+                className="rounded p-0.5 text-theme-fg/30 transition hover:bg-theme-fg/5 hover:text-theme-fg"
               >
                 {expanded ? <FiChevronDown className="h-3 w-3" /> : <FiChevronRight className="h-3 w-3" />}
               </button>
@@ -92,12 +92,12 @@ export default function IssueRow({
 
         {/* Title */}
         <td
-          className="cursor-pointer px-2 py-3 font-medium text-black transition hover:text-black/60"
+          className="cursor-pointer px-2 py-3 font-medium text-theme-fg transition hover:text-theme-fg/60"
           onClick={() => onClickIssue(issue)}
         >
           <div className="flex items-center gap-1.5" style={{ paddingLeft: depth > 0 ? `${depth * 20}px` : undefined }}>
             {depth > 0 && (
-              <span className="text-[10px] font-mono text-black/20 select-none shrink-0 leading-[1]">
+              <span className="text-[10px] font-mono text-theme-fg/20 select-none shrink-0 leading-[1]">
                 ├
               </span>
             )}
@@ -115,17 +115,17 @@ export default function IssueRow({
         <td className="px-2 py-3">{renderStatusBadge(issue.status)}</td>
 
         {/* Assignee */}
-        <td className="px-2 py-3 text-xs text-black/60">{issue.assignee}</td>
+        <td className="px-2 py-3 text-xs text-theme-fg/60">{issue.assignee}</td>
 
         {/* Created */}
-        <td className="px-2 py-3 font-mono text-[11px] text-black/40">{issue.createdAt}</td>
+        <td className="px-2 py-3 font-mono text-[11px] text-theme-fg/40">{issue.createdAt}</td>
 
         {/* Delete */}
         <td className="px-2 py-3 opacity-0 transition-opacity group-hover:opacity-100">
           <button
             type="button"
             onClick={() => onDeleteIssue(issue.id)}
-            className="rounded p-1 text-black/30 transition hover:bg-red-50 hover:text-red-600"
+            className="rounded p-1 text-theme-fg/30 transition hover:bg-red-50 hover:text-red-600"
             title="Delete issue"
           >
             <FiTrash2 className="h-3.5 w-3.5" />

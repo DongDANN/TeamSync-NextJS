@@ -16,7 +16,7 @@ type AnimatedButtonProps = {
 };
 
 const defaultClasses =
-    "relative isolate inline-flex items-center justify-center cursor-pointer overflow-hidden rounded-full border-2 border-black bg-white px-3 py-1.5 text-xs uppercase text-center md:px-5 md:py-3 md:text-base";
+    "relative isolate inline-flex items-center justify-center cursor-pointer overflow-hidden rounded-full border-2 border-theme-border bg-theme-panel px-3 py-1.5 text-xs uppercase text-center md:px-5 md:py-3 md:text-base";
 
 export default function AnimatedButton({
     children,
@@ -54,7 +54,7 @@ export default function AnimatedButton({
                     />
                     <span
                         className={`relative z-10 transition-colors duration-200 ${
-                            isHovered ? "text-white" : "text-black"
+                            isHovered ? "text-white" : "text-theme-fg"
                         } ${textClassName}`.trim()}
                     >
                         {children}
@@ -73,7 +73,7 @@ export default function AnimatedButton({
                     />
                     <span
                         className={`relative z-10 transition-colors duration-200 ${
-                            isHovered ? "text-white" : "text-black"
+                            isHovered ? "text-white" : "text-theme-fg"
                         } ${textClassName}`.trim()}
                     >
                         {children}
@@ -93,7 +93,7 @@ export default function AnimatedButton({
                 />
                 <span
                     className={`relative z-10 transition-colors duration-200 ${
-                        isHovered ? "text-white" : "text-black"
+                        isHovered ? "text-white" : "text-theme-fg"
                     } ${textClassName}`.trim()}
                 >
                     {children}

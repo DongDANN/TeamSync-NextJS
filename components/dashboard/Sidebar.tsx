@@ -15,10 +15,13 @@ import {
   FiRefreshCw,
   FiAlertTriangle,
   FiFolder,
+  FiMonitor,
 } from 'react-icons/fi'
 import { motion } from 'framer-motion'
 import { type Project, type SectionKey, TEMPLATES, type TemplateId } from '@/lib/templates'
 import NewProjectModal from './NewProjectModal'
+import { useTheme } from '@/components/ui/ThemeProvider'
+import type { ThemeId, ThemeConfig } from '@/lib/themes'
 
 type SidebarProps = {
   selected?: SectionKey
@@ -65,6 +68,8 @@ const Sidebar = ({ selected: controlledSelected, setSelected: controlledSetSelec
   const [activeProjectKey, setActiveProjectKey] = useState('TS')
   const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false)
   const [showNewProjectModal, setShowNewProjectModal] = useState(false)
+  const [showThemePicker, setShowThemePicker] = useState(false)
+  const { themeId, setTheme, themes } = useTheme()
 
   const selected = controlledSelected ?? internalSelected
   const setSelected = controlledSetSelected ?? setInternalSelected
@@ -96,7 +101,7 @@ const Sidebar = ({ selected: controlledSelected, setSelected: controlledSetSelec
     <>
       <motion.nav
         layout
-        className="sticky top-0 z-20 h-screen shrink-0 overflow-hidden border-r border-black/10 bg-white p-3"
+        className="sticky top-0 z-20 flex h-screen shrink-0 flex-col overflow-hidden border-r border-theme-border/10 bg-theme-panel p-3"
         style={{ width: open ? '225px' : 'fit-content' }}
       >
         <TitleSection
@@ -109,7 +114,7 @@ const Sidebar = ({ selected: controlledSelected, setSelected: controlledSetSelec
           onOpenNewProject={() => setShowNewProjectModal(true)}
         />
 
-        <div className="space-y-1">
+        <div className="flex-1 space-y-1 overflow-y-auto">
           {visibleSections.map((section) => (
             <Option
               key={section}
@@ -122,6 +127,14 @@ const Sidebar = ({ selected: controlledSelected, setSelected: controlledSetSelec
           ))}
         </div>
 
+        <ThemeToggle
+          open={open}
+          showPicker={showThemePicker}
+          setShowPicker={setShowThemePicker}
+          themeId={themeId}
+          themes={themes}
+          onSelect={(id) => { setTheme(id); setShowThemePicker(false) }}
+        />
         <ToggleClose open={open} setOpen={setOpen} />
       </motion.nav>
 
@@ -146,7 +159,7 @@ const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProp
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`relative flex h-10 w-full items-center overflow-hidden rounded-md px-1 transition-colors ${
-        isActive ? 'text-white' : 'text-black/55'
+        isActive ? 'text-white' : 'text-theme-fg/55'
       }`}
     >
       <motion.span
@@ -161,7 +174,7 @@ const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProp
       <motion.div
         layout
         className={`relative z-10 grid h-full w-10 place-content-center text-lg transition-colors ${
-          isActive || isHovered ? 'text-white' : 'text-black/55'
+          isActive || isHovered ? 'text-white' : 'text-theme-fg/55'
         }`}
       >
         <Icon />
@@ -173,7 +186,7 @@ const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProp
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.125 }}
           className={`relative z-10 text-xs font-medium transition-colors ${
-            isActive || isHovered ? 'text-white' : 'text-black/75'
+            isActive || isHovered ? 'text-white' : 'text-theme-fg/75'
           }`}
         >
           {title}
@@ -217,11 +230,11 @@ const TitleSection = ({
   const TemplateIcon = TEMPLATE_ICONS[activeProject.template]
 
   return (
-    <div className="relative mb-3 border-b border-black/10 pb-3">
+    <div className="relative mb-3 border-b border-theme-border/10 pb-3">
       <button
         type="button"
         onClick={() => setIsProjectMenuOpen(!isProjectMenuOpen)}
-        className="flex w-full items-center justify-between rounded-md px-1 py-1 text-left transition-colors hover:bg-black/5"
+        className="flex w-full items-center justify-between rounded-md px-1 py-1 text-left transition-colors hover:bg-theme-fg/5"
       >
         <div className="flex items-center gap-2">
           <Logo />
@@ -234,9 +247,8 @@ const TitleSection = ({
             >
               <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em]">
                 {activeProject.name}
-                <TemplateIcon className="text-black/40" />
               </span>
-              <span className="flex items-center gap-1 text-[11px] text-black/45">
+              <span className="flex items-center gap-1 text-[11px] text-theme-fg/45">
                 <span className="font-mono text-[10px]">{activeProject.key}</span>
                 <span>·</span>
                 <span>Project</span>
@@ -255,7 +267,7 @@ const TitleSection = ({
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute left-0 right-0 top-full z-30 mt-2 rounded-xl border border-black/15 bg-white p-1 shadow-[0_16px_30px_-20px_rgba(0,0,0,0.35)]"
+          className="absolute left-0 right-0 top-full z-30 mt-2 rounded-xl border border-theme-border/15 bg-theme-panel p-1 shadow-[0_16px_30px_-20px_rgba(0,0,0,0.35)]"
         >
           {projects.map((project) => {
             const Icon = TEMPLATE_ICONS[project.template]
@@ -267,7 +279,7 @@ const TitleSection = ({
                 className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors ${
                   project.key === activeProject.key
                     ? 'bg-black text-white'
-                    : 'text-black hover:bg-black/5'
+                    : 'text-theme-fg hover:bg-theme-fg/5'
                 }`}
               >
                 <Icon className="shrink-0" />
@@ -276,11 +288,11 @@ const TitleSection = ({
               </button>
             )
           })}
-          <div className="my-1 border-t border-black/10" />
+          <div className="my-1 border-t border-theme-border/10" />
           <button
             type="button"
             onClick={onOpenNewProject}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-black transition-colors hover:bg-black/5"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-theme-fg transition-colors hover:bg-theme-fg/5"
           >
             <FiPlus />
             Add New Project
@@ -312,6 +324,75 @@ const Logo = () => {
   )
 }
 
+type ThemeToggleProps = {
+  open: boolean
+  showPicker: boolean
+  setShowPicker: (v: boolean) => void
+  themeId: ThemeId
+  themes: ThemeConfig[]
+  onSelect: (id: ThemeId) => void
+}
+
+const ThemeToggle = ({ open, showPicker, setShowPicker, themeId, themes, onSelect }: ThemeToggleProps) => {
+  const current = themes.find((t) => t.id === themeId)
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setShowPicker(!showPicker)}
+        className="relative flex h-10 w-full items-center overflow-hidden rounded-md px-1 text-xs font-medium text-theme-fg/55 transition-colors hover:bg-theme-fg/5"
+      >
+        <span className="grid size-10 shrink-0 place-content-center text-lg">
+          <FiMonitor className="h-3.5 w-3.5" />
+        </span>
+        {open && (
+          <>
+            <span className="flex-1 text-left">Theme</span>
+            <span className="flex items-center gap-1.5">
+              <span
+                className="inline-block size-2 rounded-full"
+                style={{ backgroundColor: current?.accent ?? '#888' }}
+              />
+              <span className="text-[10px] uppercase tracking-wider text-theme-fg/40">
+                {current?.label ?? 'Light'}
+              </span>
+            </span>
+          </>
+        )}
+      </button>
+
+      {open && showPicker && (
+        <div className="border-t border-theme-border/10 px-2 py-2">
+          <div className="grid grid-cols-4 gap-1.5">
+            {themes.map((t) => {
+              const active = t.id === themeId
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => onSelect(t.id)}
+                  className={`group relative flex flex-col items-center gap-1 rounded-lg p-1.5 text-[9px] uppercase tracking-wider transition-all ${
+                    active
+                      ? 'bg-theme-accent text-white shadow-sm'
+                      : 'text-theme-fg/50 hover:bg-theme-panel hover:text-theme-fg/80'
+                  }`}
+                  title={t.label}
+                >
+                  <span
+                    className="inline-block size-4 rounded-full ring-1 ring-inset ring-black/10"
+                    style={{ backgroundColor: t.accent }}
+                  />
+                  <span className="truncate max-w-full leading-tight">{t.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 type ToggleCloseProps = {
   open: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -322,7 +403,7 @@ const ToggleClose = ({ open, setOpen }: ToggleCloseProps) => {
     <motion.button
       layout
       onClick={() => setOpen((pv) => !pv)}
-      className="absolute bottom-0 left-0 right-0 border-t border-black/10 transition-colors hover:bg-black/5"
+      className="border-t border-theme-border/10 transition-colors hover:bg-theme-fg/5"
     >
       <div className="flex items-center p-2">
         <motion.div layout className="grid size-10 place-content-center text-lg">

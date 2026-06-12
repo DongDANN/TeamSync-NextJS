@@ -33,12 +33,12 @@ const DropdownItem = ({ icon: Icon, children, onClick }: DropdownItemProps) => {
         className="absolute inset-0 z-0 origin-left rounded-xl bg-black"
       />
       <span
-        className={`relative z-10 transition-colors duration-200 ${isHovered ? "text-white" : "text-black"}`}
+        className={`relative z-10 transition-colors duration-200 ${isHovered ? "text-white" : "text-theme-fg"}`}
       >
         <Icon />
       </span>
       <span
-        className={`relative z-10 transition-colors duration-200 ${isHovered ? "text-white" : "text-black"}`}
+        className={`relative z-10 transition-colors duration-200 ${isHovered ? "text-white" : "text-theme-fg"}`}
       >
         {children}
       </span>
@@ -75,10 +75,10 @@ export default function HeaderDashboard({ title = "Dashboard", userName = "Admin
     .join("") || "AU";
 
   return (
-    <header className="flex flex-col gap-3 border-b border-black/10 bg-white px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-4 lg:py-4">
+    <header className="flex flex-col gap-3 border-b border-theme-border/10 bg-theme-panel px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-4 lg:py-4">
       {/* Row 1 on mobile: title left, profile right */}
       <div className="flex min-w-0 items-center justify-between gap-2 lg:w-1/4 lg:justify-start">
-        <h1 className="truncate text-xl font-bold uppercase tracking-[0.12em] text-black sm:text-2xl">
+        <h1 className="truncate text-xl font-bold uppercase tracking-[0.12em] text-theme-fg sm:text-2xl">
           {title}
         </h1>
 
@@ -97,7 +97,7 @@ export default function HeaderDashboard({ title = "Dashboard", userName = "Admin
           </AnimatedButton>
 
           {open && (
-            <div className="absolute right-0 top-[calc(100%+0.75rem)] z-30 w-56 rounded-2xl border border-black bg-white p-2 shadow-[0_18px_45px_-24px_rgba(0,0,0,0.45)]">
+            <div className="absolute right-0 top-[calc(100%+0.75rem)] z-30 w-56 rounded-2xl border border-theme-border bg-theme-panel p-2 shadow-[0_18px_45px_-24px_rgba(0,0,0,0.45)]">
               <DropdownItem icon={FiUser}>My Profile</DropdownItem>
               <DropdownItem icon={FiSettings}>Settings</DropdownItem>
               <DropdownItem icon={FiLogOut}>Sign Out</DropdownItem>
@@ -109,7 +109,7 @@ export default function HeaderDashboard({ title = "Dashboard", userName = "Admin
       {/* Row 2 on mobile: search full width */}
       <div className="lg:flex lg:w-2/4 lg:justify-center">
         <label className="relative block w-full max-w-xl min-w-0">
-          <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-black/40">
+          <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-theme-fg/40">
             <FiSearch />
           </span>
           <input
@@ -117,14 +117,14 @@ export default function HeaderDashboard({ title = "Dashboard", userName = "Admin
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search team members, tasks, or projects"
-            className="h-11 w-full rounded-full border border-black/15 bg-white pl-11 pr-11 text-sm text-black outline-none transition focus:border-black"
+            className="h-11 w-full rounded-full border border-theme-border/15 bg-theme-panel pl-11 pr-11 text-sm text-theme-fg outline-none transition focus:border-theme-fg"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
               aria-label="Clear search"
-              className="absolute inset-y-0 right-0 flex items-center pr-4 text-black/45 transition hover:text-black"
+              className="absolute inset-y-0 right-0 flex items-center pr-4 text-theme-fg/45 transition hover:text-theme-fg"
             >
               <FiX />
             </button>
@@ -151,7 +151,7 @@ export default function HeaderDashboard({ title = "Dashboard", userName = "Admin
           </AnimatedButton>
 
           {open && (
-            <div className="absolute right-0 top-[calc(100%+0.75rem)] z-30 w-56 rounded-2xl border border-black bg-white p-2 shadow-[0_18px_45px_-24px_rgba(0,0,0,0.45)]">
+            <div className="absolute right-0 top-[calc(100%+0.75rem)] z-30 w-56 rounded-2xl border border-theme-border bg-theme-panel p-2 shadow-[0_18px_45px_-24px_rgba(0,0,0,0.45)]">
               <DropdownItem icon={FiUser}>My Profile</DropdownItem>
               <DropdownItem icon={FiSettings}>Settings</DropdownItem>
               <DropdownItem icon={FiLogOut}>Sign Out</DropdownItem>

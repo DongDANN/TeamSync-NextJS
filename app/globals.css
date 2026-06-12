@@ -1,5 +1,155 @@
 @import "tailwindcss";
 
+/* ── Theme tokens — generates bg-theme-bg, text-theme-fg, border-theme-border, etc. ── */
+@theme {
+  --color-theme-bg: var(--theme-bg, #fafafa);
+  --color-theme-fg: var(--theme-fg, #111111);
+  --color-theme-panel: var(--theme-panel, #ffffff);
+  --color-theme-border: var(--theme-border, #000000);
+  --color-theme-accent: var(--theme-accent, #000000);
+}
+
+/* ── 16 preset themes ── */
+
+:root,
+[data-theme="ts"] {
+  --theme-bg: #fafafa;
+  --theme-fg: #111111;
+  --theme-panel: #ffffff;
+  --theme-border: #000000;
+  --theme-accent: #000000;
+}
+
+[data-theme="light"] {
+  --theme-bg: #f0ebe3;
+  --theme-fg: #5a5248;
+  --theme-panel: #faf6f0;
+  --theme-border: #d4cdc2;
+  --theme-accent: #c47d5a;
+}
+
+[data-theme="dark"] {
+  --theme-bg: #282c34;
+  --theme-fg: #9cdef2;
+  --theme-panel: #111111;
+  --theme-border: #355a66;
+  --theme-accent: #e06c75;
+}
+
+[data-theme="midnight"] {
+  --theme-bg: #0d1117;
+  --theme-fg: #c9d1d9;
+  --theme-panel: #161b22;
+  --theme-border: #30363d;
+  --theme-accent: #f85149;
+}
+
+[data-theme="paper"] {
+  --theme-bg: #faf8f5;
+  --theme-fg: #3b3836;
+  --theme-panel: #ffffff;
+  --theme-border: #d5d0c8;
+  --theme-accent: #c5ac4a;
+}
+
+[data-theme="cyberpunk"] {
+  --theme-bg: #0a0a0f;
+  --theme-fg: #0ff0fc;
+  --theme-panel: #12101a;
+  --theme-border: #9b30ff;
+  --theme-accent: #e040fb;
+}
+
+[data-theme="retrowave"] {
+  --theme-bg: #1a1a2e;
+  --theme-fg: #e94560;
+  --theme-panel: #16213e;
+  --theme-border: #533483;
+  --theme-accent: #e94560;
+}
+
+[data-theme="forest"] {
+  --theme-bg: #1b2a1b;
+  --theme-fg: #a8d5a2;
+  --theme-panel: #142414;
+  --theme-border: #3d6b3d;
+  --theme-accent: #7cb871;
+}
+
+[data-theme="ocean"] {
+  --theme-bg: #0b1a2c;
+  --theme-fg: #64d2ff;
+  --theme-panel: #091422;
+  --theme-border: #1e5074;
+  --theme-accent: #4facfe;
+}
+
+[data-theme="ume"] {
+  --theme-bg: #2b1b2e;
+  --theme-fg: #f5c2e7;
+  --theme-panel: #1e1420;
+  --theme-border: #6c4675;
+  --theme-accent: #f5a0c0;
+}
+
+[data-theme="copper"] {
+  --theme-bg: #1c1410;
+  --theme-fg: #e8c39e;
+  --theme-panel: #140f0a;
+  --theme-border: #7a5533;
+  --theme-accent: #d4764e;
+}
+
+[data-theme="terminal"] {
+  --theme-bg: #000000;
+  --theme-fg: #00ff41;
+  --theme-panel: #0a0a0a;
+  --theme-border: #003b00;
+  --theme-accent: #00ff41;
+}
+
+[data-theme="organs"] {
+  --theme-bg: #0a0406;
+  --theme-fg: #efe1c8;
+  --theme-panel: #15080a;
+  --theme-border: #3a1519;
+  --theme-accent: #c83240;
+}
+
+[data-theme="lavender"] {
+  --theme-bg: #f3eef8;
+  --theme-fg: #3d3551;
+  --theme-panel: #faf7ff;
+  --theme-border: #cec3de;
+  --theme-accent: #9b6dcc;
+}
+
+[data-theme="gpt"] {
+  --theme-bg: #212121;
+  --theme-fg: #ececec;
+  --theme-panel: #171717;
+  --theme-border: #424242;
+  --theme-accent: #949494;
+}
+
+[data-theme="claude"] {
+  --theme-bg: #262624;
+  --theme-fg: #f5f4f0;
+  --theme-panel: #30302e;
+  --theme-border: #4a4a47;
+  --theme-accent: #c6613f;
+}
+
+[data-theme="cute"] {
+  --theme-bg: #fff0f5;
+  --theme-fg: #d4608a;
+  --theme-panel: #fff8fa;
+  --theme-border: #f0c0d0;
+  --theme-accent: #ff6b9d;
+}
+
+/* ── Base reset ── */
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -8,8 +158,8 @@ body {
   font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 16px;
   line-height: 1.5;
-  color: #111;
-  background: #fff;
+  color: var(--theme-fg);
+  background: var(--theme-bg);
 }
 
 a {
@@ -45,7 +195,7 @@ button {
   width: 0.85rem;
   height: 0.85rem;
   border-radius: 9999px;
-  background: #111;
+  background: var(--theme-fg, #111);
   animation: ts-shuffle-pop 0.9s ease-in-out infinite;
 }
 
@@ -66,7 +216,7 @@ button {
 }
 
 .ts-shuffle-label {
-  color: #444;
+  color: var(--theme-fg, #444);
   font-size: 0.95rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;

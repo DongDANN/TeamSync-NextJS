@@ -187,11 +187,11 @@ export default function IssueDetailModal({
   const renderAttachmentRow = (a: Attachment, onRemove?: () => void) => {
     const imgUrl = resolveUrl(a)
     return (
-      <li key={a.id} className="flex items-center justify-between rounded-lg border border-black/10 bg-white px-3 py-2">
+      <li key={a.id} className="flex items-center justify-between rounded-lg border border-theme-border/10 bg-theme-panel px-3 py-2">
         <div className="flex items-center gap-2 overflow-hidden min-w-0">
           {isImage(a) ? (
             <button type="button" onClick={() => onPreviewImage(imgUrl)} className="shrink-0">
-              <img src={imgUrl} alt={a.fileName} className="h-10 w-10 rounded-md border border-black/10 object-cover transition hover:opacity-80" />
+              <img src={imgUrl} alt={a.fileName} className="h-10 w-10 rounded-md border border-theme-border/10 object-cover transition hover:opacity-80" />
             </button>
           ) : (
             <span className="shrink-0">{getFileIcon(a.fileType)}</span>
@@ -199,16 +199,16 @@ export default function IssueDetailModal({
           <button
             type="button"
             onClick={() => isImage(a) && onPreviewImage(imgUrl)}
-            className={`truncate text-xs font-medium ${isImage(a) ? 'text-blue-600 hover:underline' : 'text-black'} min-w-0 text-left`}
+            className={`truncate text-xs font-medium ${isImage(a) ? 'text-blue-600 hover:underline' : 'text-theme-fg'} min-w-0 text-left`}
           >
             {a.fileName}
           </button>
-          <span className="shrink-0 text-[10px] text-black/40">{formatFileSize(a.fileSize)}</span>
+          <span className="shrink-0 text-[10px] text-theme-fg/40">{formatFileSize(a.fileSize)}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-2">
-          <span className="text-[10px] text-black/40">{a.uploadedBy}</span>
+          <span className="text-[10px] text-theme-fg/40">{a.uploadedBy}</span>
           {onRemove && (
-            <button type="button" onClick={onRemove} className="rounded p-0.5 text-black/30 hover:text-red-600">
+            <button type="button" onClick={onRemove} className="rounded p-0.5 text-theme-fg/30 hover:text-red-600">
               <FiX className="h-3 w-3" />
             </button>
           )}
@@ -222,9 +222,9 @@ export default function IssueDetailModal({
   return (
     <ModalFrame onClose={onClose}>
       {/* Header */}
-      <div className="flex shrink-0 items-center justify-between border-b border-black/10 px-6 py-4">
+      <div className="flex shrink-0 items-center justify-between border-b border-theme-border/10 px-6 py-4">
         <div className="flex items-center gap-3">
-          <span className="font-mono text-xs text-black/40">{issue.id}</span>
+          <span className="font-mono text-xs text-theme-fg/40">{issue.id}</span>
           {renderStatusBadge(status)}
         </div>
         <div className="flex items-center gap-1">
@@ -241,7 +241,7 @@ export default function IssueDetailModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-black/40 transition hover:bg-black/5 hover:text-black"
+            className="rounded-lg p-1.5 text-theme-fg/40 transition hover:bg-theme-fg/5 hover:text-theme-fg"
           >
             <FiX className="h-4 w-4" />
           </button>
@@ -259,19 +259,19 @@ export default function IssueDetailModal({
               <nav className="flex items-center gap-1 text-xs flex-wrap">
                 {chain.map((parent) => (
                   <span key={parent.id} className="flex items-center gap-1">
-                    <span className="text-black/20 mx-0.5 select-none">/</span>
+                    <span className="text-theme-fg/20 mx-0.5 select-none">/</span>
                     <button
                       type="button"
                       onClick={() => onNavigateToIssue(parent.id)}
-                      className="inline-flex items-center gap-1 rounded-md px-2 py-1 font-medium text-black/50 transition hover:bg-zinc-100 hover:text-black"
+                      className="inline-flex items-center gap-1 rounded-md px-2 py-1 font-medium text-theme-fg/50 transition hover:bg-theme-fg/5 hover:text-theme-fg"
                     >
                       <span className="shrink-0">{renderTypeIcon(parent.typeId)}</span>
                       <span>{parent.id}</span>
                     </button>
                   </span>
                 ))}
-                <span className="text-black/20 mx-0.5 select-none">/</span>
-                <span className="inline-flex items-center gap-1 rounded-md px-2 py-1 font-medium text-black">
+                <span className="text-theme-fg/20 mx-0.5 select-none">/</span>
+                <span className="inline-flex items-center gap-1 rounded-md px-2 py-1 font-medium text-theme-fg">
                   <span className="shrink-0">{renderTypeIcon(issue.typeId)}</span>
                   <span>{issue.id}</span>
                 </span>
@@ -281,35 +281,35 @@ export default function IssueDetailModal({
 
           {/* Title */}
           <div>
-            <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-black/50">Title</label>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-theme-fg/50">Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => { setTitle(e.target.value); markDirty() }}
-              className="mt-1 block w-full rounded-lg border border-black/15 px-3 py-2 text-sm font-medium outline-none transition focus:border-black"
+              className="mt-1 block w-full rounded-lg border border-theme-border/15 px-3 py-2 text-sm font-medium outline-none transition focus:border-theme-fg"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-black/50">Description</label>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-theme-fg/50">Description</label>
             <textarea
               rows={4}
               value={description}
               onChange={(e) => { setDescription(e.target.value); markDirty() }}
               placeholder="Add a description…"
-              className="mt-1 block w-full resize-none rounded-lg border border-black/15 px-3 py-2 text-sm outline-none transition focus:border-black"
+              className="mt-1 block w-full resize-none rounded-lg border border-theme-border/15 px-3 py-2 text-sm outline-none transition focus:border-theme-fg"
             />
           </div>
 
           {/* Metadata grid */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div>
-              <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-black/50">Type</label>
+              <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-theme-fg/50">Type</label>
               <select
                 value={typeId}
                 onChange={(e) => { setTypeId(e.target.value); markDirty() }}
-                className="mt-1 block w-full rounded-lg border border-black/15 px-3 py-2 text-sm outline-none transition focus:border-black"
+                className="mt-1 block w-full rounded-lg border border-theme-border/15 px-3 py-2 text-sm outline-none transition focus:border-theme-fg"
               >
                 {config.issueTypes.map((t) => (
                   <option key={t.id} value={t.id}>{t.label}</option>
@@ -317,11 +317,11 @@ export default function IssueDetailModal({
               </select>
             </div>
             <div>
-              <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-black/50">Priority</label>
+              <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-theme-fg/50">Priority</label>
               <select
                 value={priorityId}
                 onChange={(e) => { setPriorityId(e.target.value); markDirty() }}
-                className="mt-1 block w-full rounded-lg border border-black/15 px-3 py-2 text-sm outline-none transition focus:border-black"
+                className="mt-1 block w-full rounded-lg border border-theme-border/15 px-3 py-2 text-sm outline-none transition focus:border-theme-fg"
               >
                 {config.priorities.map((p) => (
                   <option key={p.id} value={p.id}>{p.label}</option>
@@ -329,11 +329,11 @@ export default function IssueDetailModal({
               </select>
             </div>
             <div>
-              <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-black/50">Status</label>
+              <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-theme-fg/50">Status</label>
               <select
                 value={status}
                 onChange={(e) => { setStatus(e.target.value as IssueStatus); markDirty() }}
-                className="mt-1 block w-full rounded-lg border border-black/15 px-3 py-2 text-sm outline-none transition focus:border-black"
+                className="mt-1 block w-full rounded-lg border border-theme-border/15 px-3 py-2 text-sm outline-none transition focus:border-theme-fg"
               >
                 {STATUS_OPTIONS.map(({ key, label }) => (
                   <option key={key} value={key}>{label}</option>
@@ -341,13 +341,13 @@ export default function IssueDetailModal({
               </select>
             </div>
             <div>
-              <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-black/50">Assignee</label>
+              <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-theme-fg/50">Assignee</label>
               <input
                 type="text"
                 value={assignee}
                 onChange={(e) => { setAssignee(e.target.value); markDirty() }}
                 placeholder="Unassigned"
-                className="mt-1 block w-full rounded-lg border border-black/15 px-3 py-2 text-sm outline-none transition focus:border-black"
+                className="mt-1 block w-full rounded-lg border border-theme-border/15 px-3 py-2 text-sm outline-none transition focus:border-theme-fg"
               />
             </div>
           </div>
@@ -358,15 +358,15 @@ export default function IssueDetailModal({
             if (!parent) return null
             return (
               <div>
-                <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-black/50">Parent Issue</label>
+                <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-theme-fg/50">Parent Issue</label>
                 <button
                   type="button"
                   onClick={() => onNavigateToIssue(parent.id)}
-                  className="mt-1 flex w-full items-center gap-2 rounded-lg border border-black/15 bg-zinc-50 px-3 py-2.5 text-sm text-left transition hover:bg-zinc-100"
+                  className="mt-1 flex w-full items-center gap-2 rounded-lg border border-theme-border/15 bg-theme-bg px-3 py-2.5 text-sm text-left transition hover:bg-theme-fg/5"
                 >
                   {renderTypeIcon(parent.typeId)}
-                  <span className="font-medium text-black">{parent.title}</span>
-                  <span className="font-mono text-[11px] text-black/40">{parent.id}</span>
+                  <span className="font-medium text-theme-fg">{parent.title}</span>
+                  <span className="font-mono text-[11px] text-theme-fg/40">{parent.id}</span>
                 </button>
               </div>
             )
@@ -374,17 +374,17 @@ export default function IssueDetailModal({
 
           {/* Attachments */}
           <div>
-            <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-black/50">
+            <label className="block text-[10px] font-medium uppercase tracking-[0.08em] text-theme-fg/50">
               Attachments
               {(attachments[issue.id]?.length ?? 0) > 0 && (
-                <span className="ml-1 text-black/40">({attachments[issue.id].length})</span>
+                <span className="ml-1 text-theme-fg/40">({attachments[issue.id].length})</span>
               )}
             </label>
             <div className="mt-1">
               <button
                 type="button"
                 onClick={handleDetailFilePick}
-                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-black/15 px-3 text-xs font-medium text-black/60 transition hover:border-black/40"
+                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-theme-border/15 px-3 text-xs font-medium text-theme-fg/60 transition hover:border-theme-border/40"
               >
                 <FiPaperclip className="h-3.5 w-3.5" />
                 Add files
@@ -398,8 +398,8 @@ export default function IssueDetailModal({
           </div>
 
           {/* Read-only metadata */}
-          <div className="rounded-lg border border-black/10 bg-zinc-50 px-4 py-3">
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-black/50">
+          <div className="rounded-lg border border-theme-border/10 bg-theme-bg px-4 py-3">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-theme-fg/50">
               <span className="inline-flex items-center gap-1.5"><FiHash className="h-3 w-3" />{issue.id}</span>
               <span className="inline-flex items-center gap-1.5"><FiCalendar className="h-3 w-3" />Created {issue.createdAt}</span>
               <span className="inline-flex items-center gap-1.5"><FiUser className="h-3 w-3" />{assignee || 'Unassigned'}</span>
@@ -410,23 +410,23 @@ export default function IssueDetailModal({
 
           {/* Child issues */}
           {(children.length > 0 || canHaveChildren(issue.typeId)) && (
-            <div className="border-t border-black/10 pt-4">
-              <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-black/50">
+            <div className="border-t border-theme-border/10 pt-4">
+              <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-theme-fg/50">
                 <FiLayers className="h-3.5 w-3.5" />
                 Child Issues
-                <span className="ml-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-normal">{children.length}</span>
+                <span className="ml-1 rounded-full bg-theme-bg px-2 py-0.5 text-[10px] font-normal">{children.length}</span>
               </h3>
 
               {children.length > 0 && (
                 <>
                   <div className="mt-3 mb-3 flex items-center gap-3">
-                    <div className="flex-1 h-1.5 rounded-full bg-zinc-100 overflow-hidden">
+                    <div className="flex-1 h-1.5 rounded-full bg-theme-bg overflow-hidden">
                       <div
                         className="h-full rounded-full bg-emerald-500 transition-all"
                         style={{ width: `${(children.filter((c) => c.status === 'done' || c.status === 'closed').length / children.length) * 100}%` }}
                       />
                     </div>
-                    <span className="text-[10px] font-medium text-black/50">
+                    <span className="text-[10px] font-medium text-theme-fg/50">
                       {children.filter((c) => c.status === 'done' || c.status === 'closed').length}/{children.length} done
                     </span>
                   </div>
@@ -434,12 +434,12 @@ export default function IssueDetailModal({
                     {children.map((child) => (
                       <div
                         key={child.id}
-                        className="flex items-center gap-3 rounded-lg border border-black/10 bg-zinc-50 px-3 py-2 cursor-pointer transition hover:bg-zinc-100"
+                        className="flex items-center gap-3 rounded-lg border border-theme-border/10 bg-theme-bg px-3 py-2 cursor-pointer transition hover:bg-theme-fg/5"
                         onClick={() => onNavigateToIssue(child.id)}
                       >
                         {renderTypeIcon(child.typeId)}
-                        <span className="flex-1 truncate text-xs font-medium text-black">{child.title}</span>
-                        <span className="font-mono text-[10px] text-black/40">{child.id}</span>
+                        <span className="flex-1 truncate text-xs font-medium text-theme-fg">{child.title}</span>
+                        <span className="font-mono text-[10px] text-theme-fg/40">{child.id}</span>
                         {renderStatusBadge(child.status)}
                       </div>
                     ))}
@@ -455,7 +455,7 @@ export default function IssueDetailModal({
                     // The parent should set the parentId when creating from here
                     // This requires coordination — handled via onClose + external state
                   }}
-                  className="mt-3 inline-flex h-8 items-center gap-1.5 rounded-lg border border-dashed border-black/20 px-3 text-xs font-medium text-black/50 transition hover:border-black/40 hover:text-black"
+                  className="mt-3 inline-flex h-8 items-center gap-1.5 rounded-lg border border-dashed border-theme-border/20 px-3 text-xs font-medium text-theme-fg/50 transition hover:border-theme-border/40 hover:text-theme-fg"
                 >
                   <FiPlus className="h-3 w-3" />
                   Add child issue
@@ -465,7 +465,7 @@ export default function IssueDetailModal({
           )}
 
           {/* Delete */}
-          <div className="border-t border-black/10 pt-2">
+          <div className="border-t border-theme-border/10 pt-2">
             <button
               type="button"
               onClick={handleDelete}
@@ -477,11 +477,11 @@ export default function IssueDetailModal({
           </div>
 
           {/* Comments */}
-          <div className="border-t border-black/10 pt-6">
-            <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-black/50">
+          <div className="border-t border-theme-border/10 pt-6">
+            <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-theme-fg/50">
               <FiMessageSquare className="h-3.5 w-3.5" />
               Comments
-              <span className="ml-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-normal">{issueComments.length}</span>
+              <span className="ml-1 rounded-full bg-theme-bg px-2 py-0.5 text-[10px] font-normal">{issueComments.length}</span>
             </h3>
 
             {/* New comment */}
@@ -492,7 +492,7 @@ export default function IssueDetailModal({
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Write a comment…"
                   rows={2}
-                  className="flex-1 block resize-none rounded-lg border border-black/15 px-3 py-2 text-sm outline-none transition focus:border-black"
+                  className="flex-1 block resize-none rounded-lg border border-theme-border/15 px-3 py-2 text-sm outline-none transition focus:border-theme-fg"
                 />
                 <button
                   type="button"
@@ -509,7 +509,7 @@ export default function IssueDetailModal({
                 <button
                   type="button"
                   onClick={handleCommentFilePick}
-                  className="inline-flex h-7 items-center gap-1 rounded-lg border border-black/15 px-2.5 text-[10px] font-medium text-black/50 transition hover:border-black/40"
+                  className="inline-flex h-7 items-center gap-1 rounded-lg border border-theme-border/15 px-2.5 text-[10px] font-medium text-theme-fg/50 transition hover:border-theme-border/40"
                 >
                   <FiPaperclip className="h-3 w-3" />
                   Attach files
@@ -517,12 +517,12 @@ export default function IssueDetailModal({
                 <input ref={commentFileRef} type="file" multiple onChange={handleCommentFileChange} className="hidden" />
                 {commentFiles.length > 0 && (
                   <>
-                    <span className="text-[10px] text-black/40">{commentFiles.length} file{commentFiles.length > 1 ? 's' : ''} attached</span>
+                    <span className="text-[10px] text-theme-fg/40">{commentFiles.length} file{commentFiles.length > 1 ? 's' : ''} attached</span>
                     <ul className="flex gap-1 ml-1">
                       {commentFiles.map((a) => (
-                        <li key={a.id} className="flex items-center gap-1 rounded bg-zinc-100 px-2 py-0.5">
-                          <span className="text-[10px] text-black/60 truncate max-w-[80px]">{a.fileName}</span>
-                          <button onClick={() => setCommentFiles((prev) => prev.filter((x) => x.id !== a.id))} className="text-black/30 hover:text-red-600">
+                        <li key={a.id} className="flex items-center gap-1 rounded bg-theme-bg px-2 py-0.5">
+                          <span className="text-[10px] text-theme-fg/60 truncate max-w-[80px]">{a.fileName}</span>
+                          <button onClick={() => setCommentFiles((prev) => prev.filter((x) => x.id !== a.id))} className="text-theme-fg/30 hover:text-red-600">
                             <FiX className="h-2.5 w-2.5" />
                           </button>
                         </li>
@@ -542,25 +542,25 @@ export default function IssueDetailModal({
 
                 return (
                   <div key={comment.id}>
-                    <div className="rounded-lg border border-black/10 bg-zinc-50 px-4 py-3">
+                    <div className="rounded-lg border border-theme-border/10 bg-theme-bg px-4 py-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="grid size-6 place-content-center rounded-full bg-black text-[10px] font-semibold text-white">
                             {comment.author.charAt(0)}
                           </span>
-                          <span className="text-xs font-semibold text-black">{comment.author}</span>
-                          <span className="text-[10px] text-black/40">{comment.createdAt}</span>
+                          <span className="text-xs font-semibold text-theme-fg">{comment.author}</span>
+                          <span className="text-[10px] text-theme-fg/40">{comment.createdAt}</span>
                         </div>
                         <button
                           type="button"
                           onClick={() => { setReplyTo(isReplying ? null : comment.id); setReplyText('') }}
-                          className="inline-flex items-center gap-1 text-[10px] font-medium text-black/40 transition hover:text-black"
+                          className="inline-flex items-center gap-1 text-[10px] font-medium text-theme-fg/40 transition hover:text-theme-fg"
                         >
                           <FiCornerDownRight className="h-3 w-3" />
                           Reply
                         </button>
                       </div>
-                      <p className="mt-2 whitespace-pre-wrap text-sm text-black/80">{comment.body}</p>
+                      <p className="mt-2 whitespace-pre-wrap text-sm text-theme-fg/80">{comment.body}</p>
 
                       {/* Comment attachments */}
                       {commentAttachments.length > 0 && (
@@ -568,10 +568,10 @@ export default function IssueDetailModal({
                           {commentAttachments.map((a) => {
                             const imgUrl = resolveUrl(a)
                             return (
-                              <li key={a.id} className="flex items-center gap-2 rounded-md border border-black/5 bg-white px-2.5 py-1.5">
+                              <li key={a.id} className="flex items-center gap-2 rounded-md border border-theme-border/5 bg-theme-panel px-2.5 py-1.5">
                                 {isImage(a) ? (
                                   <button type="button" onClick={() => onPreviewImage(imgUrl)} className="shrink-0">
-                                    <img src={imgUrl} alt={a.fileName} className="h-8 w-8 rounded border border-black/5 object-cover transition hover:opacity-80" />
+                                    <img src={imgUrl} alt={a.fileName} className="h-8 w-8 rounded border border-theme-border/5 object-cover transition hover:opacity-80" />
                                   </button>
                                 ) : (
                                   <span className="shrink-0">{getFileIcon(a.fileType)}</span>
@@ -579,11 +579,11 @@ export default function IssueDetailModal({
                                 <button
                                   type="button"
                                   onClick={() => isImage(a) && onPreviewImage(imgUrl)}
-                                  className={`truncate text-xs ${isImage(a) ? 'text-blue-600 hover:underline' : 'text-black'} min-w-0 text-left`}
+                                  className={`truncate text-xs ${isImage(a) ? 'text-blue-600 hover:underline' : 'text-theme-fg'} min-w-0 text-left`}
                                 >
                                   {a.fileName}
                                 </button>
-                                <span className="shrink-0 text-[10px] text-black/40">{formatFileSize(a.fileSize)}</span>
+                                <span className="shrink-0 text-[10px] text-theme-fg/40">{formatFileSize(a.fileSize)}</span>
                               </li>
                             )
                           })}
@@ -604,7 +604,7 @@ export default function IssueDetailModal({
                             if (e.key === 'Escape') setReplyTo(null)
                           }}
                           autoFocus
-                          className="flex-1 rounded-lg border border-black/15 px-3 py-2 text-sm outline-none transition focus:border-black"
+                          className="flex-1 rounded-lg border border-theme-border/15 px-3 py-2 text-sm outline-none transition focus:border-theme-fg"
                         />
                         <button
                           type="button"
@@ -621,15 +621,15 @@ export default function IssueDetailModal({
                     {replies.length > 0 && (
                       <div className="ml-8 mt-2 space-y-2">
                         {replies.map((reply) => (
-                          <div key={reply.id} className="rounded-lg border border-black/5 bg-white px-4 py-3">
+                          <div key={reply.id} className="rounded-lg border border-theme-border/5 bg-theme-panel px-4 py-3">
                             <div className="flex items-center gap-2">
                               <span className="grid size-5 place-content-center rounded-full bg-black/70 text-[9px] font-semibold text-white">
                                 {reply.author.charAt(0)}
                               </span>
-                              <span className="text-xs font-semibold text-black">{reply.author}</span>
-                              <span className="text-[10px] text-black/40">{reply.createdAt}</span>
+                              <span className="text-xs font-semibold text-theme-fg">{reply.author}</span>
+                              <span className="text-[10px] text-theme-fg/40">{reply.createdAt}</span>
                             </div>
-                            <p className="mt-1.5 whitespace-pre-wrap text-sm text-black/80">{reply.body}</p>
+                            <p className="mt-1.5 whitespace-pre-wrap text-sm text-theme-fg/80">{reply.body}</p>
                           </div>
                         ))}
                       </div>
@@ -638,7 +638,7 @@ export default function IssueDetailModal({
                 )
               })}
               {issueComments.length === 0 && (
-                <p className="py-4 text-center text-xs text-black/40">No comments yet. Start the discussion.</p>
+                <p className="py-4 text-center text-xs text-theme-fg/40">No comments yet. Start the discussion.</p>
               )}
             </div>
           </div>
