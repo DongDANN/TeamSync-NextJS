@@ -9,7 +9,25 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
+
     if (!error) {
+      // Save the GitHub provider token (access token) to the user's profile
+      const { data: { session } } = await supabase.auth.getSession()
+      const providerToken = session?.provider_token
+
+      if (providerToken && session?.user?.id) {
+        const { user } = session
+        // Best-effort: save the GitHub token to the profile.
+        // Column may not exist yet if migration hasn't run — that's fine.
+        try {
+          await (supabase.from('profiles') as any)
+            .update({ github_token: providerToken, github_owner: user.user_metadata?.user_name ?? null })
+            .eq('id', user.id)
+        } catch {
+          // Migration not run or no profile row yet — silently skip
+        }
+      }
+
       return NextResponse.redirect(`${origin}${next}`)
     }
   }

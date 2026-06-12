@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server'
 import { getPRs, getCIRuns } from '@/lib/github'
+import { createClient } from '@/lib/supabase/server'
 
 export async function GET() {
-  const [prs, runs] = await Promise.all([getPRs(), getCIRuns()])
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  const userToken = session?.provider_token || undefined
+
+  const [prs, runs] = await Promise.all([getPRs(undefined, userToken), getCIRuns(userToken)])
 
   const openPRs = prs.filter((p) => p.status === 'open').length
   const mergedPRs = prs.filter((p) => p.status === 'merged').length

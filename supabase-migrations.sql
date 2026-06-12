@@ -38,3 +38,8 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- GitHub OAuth columns: add to profiles so each user can store their own token
+alter table public.profiles add column github_token text;
+alter table public.profiles add column github_owner text;
+alter table public.profiles add column github_repo text;
