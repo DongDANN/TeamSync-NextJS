@@ -15,6 +15,7 @@ import {
   defaultAttachments,
 } from '@/lib/mock-data'
 import AnimatedButton from '@/components/ui/AnimatedButton'
+import AlertModal from '@/components/ui/AlertModal'
 import IssueRow from '@/components/dashboard/backlog-sections/IssueRow'
 import IssueCard from '@/components/dashboard/backlog-sections/IssueCard'
 import CreateIssueModal from '@/components/dashboard/backlog-sections/CreateIssueModal'
@@ -48,6 +49,7 @@ export default function Backlog({ template = 'general' }: BacklogProps) {
   const [createParentId, setCreateParentId] = useState<string | null>(null)
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; childCount: number } | null>(null)
 
   /* ── Derived ── */
   const childMap = useMemo(() => {
@@ -94,11 +96,16 @@ export default function Backlog({ template = 'general' }: BacklogProps) {
   const handleDeleteIssue = (id: string) => {
     const children = childMap[id]
     if (children && children.length > 0) {
-      if (!confirm(`This issue has ${children.length} child issue${children.length > 1 ? 's' : ''}. Delete them too?`)) return
-      setIssues((prev) => prev.filter((i) => i.id !== id && i.parentId !== id))
+      setDeleteConfirm({ id, childCount: children.length })
     } else {
       setIssues((prev) => prev.filter((i) => i.id !== id))
     }
+  }
+
+  const handleDeleteWithChildren = () => {
+    if (!deleteConfirm) return
+    setIssues((prev) => prev.filter((i) => i.id !== deleteConfirm.id && i.parentId !== deleteConfirm.id))
+    setDeleteConfirm(null)
   }
 
   const handleAddComment = (comment: Comment) => {
@@ -387,6 +394,22 @@ export default function Backlog({ template = 'general' }: BacklogProps) {
           </motion.div>
         </div>
       )}
+
+      {/* ── Delete confirmation alert ── */}
+      <AlertModal
+        open={!!deleteConfirm}
+        title="Delete issue"
+        message={
+          deleteConfirm
+            ? `This issue has ${deleteConfirm.childCount} child issue${deleteConfirm.childCount > 1 ? 's' : ''}. Delete them too?`
+            : ''
+        }
+        confirmLabel="Delete all"
+        cancelLabel="Cancel"
+        variant="danger"
+        onConfirm={handleDeleteWithChildren}
+        onCancel={() => setDeleteConfirm(null)}
+      />
     </section>
   )
 }

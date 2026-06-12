@@ -12,6 +12,7 @@ import {
 } from '@/lib/issues'
 import type { TemplateConfig, IssueType, Priority } from '@/lib/templates'
 import ModalFrame from './ModalFrame'
+import AlertModal from '@/components/ui/AlertModal'
 
 /* ──────────────────────────────────────────────
    Props
@@ -72,6 +73,7 @@ export default function IssueDetailModal({
   const [replyText, setReplyText] = useState('')
   const [commentFiles, setCommentFiles] = useState<Attachment[]>([])
   const commentFileRef = useRef<HTMLInputElement>(null)
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false)
 
   const markDirty = () => { if (!dirty) setDirty(true) }
 
@@ -99,10 +101,12 @@ export default function IssueDetailModal({
   }
 
   const handleDelete = () => {
-    if (confirm('Delete this issue?')) {
-      onDeleteIssue(issue.id)
-      onClose()
-    }
+    setShowDeleteAlert(true)
+  }
+
+  const handleConfirmDelete = () => {
+    onDeleteIssue(issue.id)
+    onClose()
   }
 
   /* ── Comments ── */
@@ -220,6 +224,7 @@ export default function IssueDetailModal({
   const issueComments = comments.filter((c) => c.issueId === issue.id)
 
   return (
+    <>
     <ModalFrame onClose={onClose}>
       {/* Header */}
       <div className="flex shrink-0 items-center justify-between border-b border-theme-border/10 px-6 py-4">
@@ -645,5 +650,17 @@ export default function IssueDetailModal({
         </div>
       </div>
     </ModalFrame>
+
+      <AlertModal
+        open={showDeleteAlert}
+        title="Delete issue"
+        message="Are you sure you want to delete this issue? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setShowDeleteAlert(false)}
+      />
+    </>
   )
 }
