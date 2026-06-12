@@ -16,6 +16,7 @@ import {
 } from '@/lib/mock-data'
 import AnimatedButton from '@/components/ui/AnimatedButton'
 import IssueRow from '@/components/dashboard/backlog-sections/IssueRow'
+import IssueCard from '@/components/dashboard/backlog-sections/IssueCard'
 import CreateIssueModal from '@/components/dashboard/backlog-sections/CreateIssueModal'
 import IssueDetailModal from '@/components/dashboard/backlog-sections/IssueDetailModal'
 
@@ -223,7 +224,7 @@ export default function Backlog({ template = 'general' }: BacklogProps) {
         )}
       </div>
 
-      {/* ── Issue tree table ── */}
+      {/* ── Issue tree: Cards on mobile, table on md+ ── */}
       <div className="overflow-x-auto">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -242,24 +243,13 @@ export default function Backlog({ template = 'general' }: BacklogProps) {
             </p>
           </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-theme-border/5 text-left text-[10px] font-medium uppercase tracking-[0.1em] text-theme-fg/40">
-                <th className="px-6 py-3 font-medium">ID</th>
-                <th className="px-2 py-3 font-medium">Type</th>
-                <th className="w-full px-2 py-3 font-medium">Title</th>
-                <th className="px-2 py-3 font-medium">Priority</th>
-                <th className="px-2 py-3 font-medium">Status</th>
-                <th className="px-2 py-3 font-medium">Assignee</th>
-                <th className="px-2 py-3 font-medium">Created</th>
-                <th className="px-2 py-3 font-medium" />
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* Mobile card view */}
+            <div className="space-y-2 px-4 py-3 md:hidden">
               {filtered
                 .filter((i) => !i.parentId)
                 .map((root) => (
-                  <IssueRow
+                  <IssueCard
                     key={root.id}
                     issue={root}
                     childMap={childMap}
@@ -273,7 +263,7 @@ export default function Backlog({ template = 'general' }: BacklogProps) {
               {filtered
                 .filter((i) => i.parentId && !filtered.some((p) => p.id === i.parentId))
                 .map((orphan) => (
-                  <IssueRow
+                  <IssueCard
                     key={orphan.id}
                     issue={orphan}
                     childMap={childMap}
@@ -284,8 +274,54 @@ export default function Backlog({ template = 'general' }: BacklogProps) {
                     onDeleteIssue={handleDeleteIssue}
                   />
                 ))}
-            </tbody>
-          </table>
+            </div>
+
+            {/* Desktop table view */}
+            <table className="hidden w-full md:table">
+              <thead>
+                <tr className="border-b border-theme-border/5 text-left text-[10px] font-medium uppercase tracking-[0.1em] text-theme-fg/40">
+                  <th className="px-6 py-3 font-medium">ID</th>
+                  <th className="px-2 py-3 font-medium">Type</th>
+                  <th className="w-full px-2 py-3 font-medium">Title</th>
+                  <th className="px-2 py-3 font-medium">Priority</th>
+                  <th className="px-2 py-3 font-medium">Status</th>
+                  <th className="px-2 py-3 font-medium">Assignee</th>
+                  <th className="px-2 py-3 font-medium">Created</th>
+                  <th className="px-2 py-3 font-medium" />
+                </tr>
+              </thead>
+              <tbody>
+                {filtered
+                  .filter((i) => !i.parentId)
+                  .map((root) => (
+                    <IssueRow
+                      key={root.id}
+                      issue={root}
+                      childMap={childMap}
+                      expandedParents={expandedParents}
+                      config={config}
+                      onToggleParent={(id) => setExpandedParents((prev) => ({ ...prev, [id]: !prev[id] }))}
+                      onClickIssue={(issue) => setSelectedIssue(issue)}
+                      onDeleteIssue={handleDeleteIssue}
+                    />
+                  ))}
+                {filtered
+                  .filter((i) => i.parentId && !filtered.some((p) => p.id === i.parentId))
+                  .map((orphan) => (
+                    <IssueRow
+                      key={orphan.id}
+                      issue={orphan}
+                      childMap={childMap}
+                      expandedParents={expandedParents}
+                      config={config}
+                      onToggleParent={(id) => setExpandedParents((prev) => ({ ...prev, [id]: !prev[id] }))}
+                      onClickIssue={(issue) => setSelectedIssue(issue)}
+                      onDeleteIssue={handleDeleteIssue}
+                    />
+                  ))}
+              </tbody>
+            </table>
+          </>
         )}
       </div>
 

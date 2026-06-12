@@ -10,16 +10,25 @@ type ModalFrameProps = {
 export default function ModalFrame({ children, onClose }: ModalFrameProps) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex md:items-center md:justify-center"
       onClick={onClose}
     >
+      {/* Backdrop */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+      />
+
+      {/* Modal card — full-screen on mobile, centered card on md+ */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 12 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative mx-4 flex max-h-[85vh] w-full max-w-2xl flex-col rounded-2xl border border-theme-border/10 bg-theme-panel shadow-[0_25px_60px_-20px_rgba(0,0,0,0.35)]"
+        className="relative flex h-dvh w-full flex-col overflow-hidden bg-theme-panel md:h-auto md:max-h-[85vh] md:max-w-2xl md:rounded-2xl md:border md:border-theme-border/10 md:shadow-[0_25px_60px_-20px_rgba(0,0,0,0.35)] md:mx-4"
       >
         {children}
       </motion.div>

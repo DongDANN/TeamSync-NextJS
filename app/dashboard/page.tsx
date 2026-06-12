@@ -33,6 +33,7 @@ export default function DashboardPage() {
   const [selected, setSelected] = useState<SectionKey>('Summary')
   const [userName, setUserName] = useState('Admin User')
   const [activeTemplate, setActiveTemplate] = useState<TemplateId>('general')
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
 
   useEffect(() => {
     async function loadUser() {
@@ -64,10 +65,17 @@ export default function DashboardPage() {
         selected={selected}
         setSelected={setSelected}
         onActiveTemplateChange={setActiveTemplate}
+        isMobileOpen={mobileSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
       />
       <div className="flex min-w-0 flex-1 flex-col">
-        <HeaderDashboard title={selected} userName={userName} />
-        <main className="flex-1 overflow-y-auto bg-theme-bg p-6">
+        <HeaderDashboard
+          title={selected}
+          userName={userName}
+          onToggleSidebar={() => setMobileSidebarOpen((v) => !v)}
+          isSidebarOpen={mobileSidebarOpen}
+        />
+        <main className="flex-1 overflow-y-auto bg-theme-bg p-4 md:p-6">
           <SectionComponent template={activeTemplate} />
         </main>
       </div>

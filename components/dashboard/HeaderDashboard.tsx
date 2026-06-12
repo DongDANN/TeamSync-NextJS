@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect, useRef, useState } from "react";
-import { FiChevronDown, FiLogOut, FiSearch, FiSettings, FiUser, FiX } from "react-icons/fi";
+import { FiChevronDown, FiLogOut, FiMenu, FiSearch, FiSettings, FiUser, FiX } from "react-icons/fi";
 import { motion } from "motion/react";
 import AnimatedButton from "@/components/ui/AnimatedButton";
 
 type HeaderDashboardProps = {
   title?: string;
   userName?: string;
+  onToggleSidebar?: () => void;
+  isSidebarOpen?: boolean;
 };
 
 type DropdownItemProps = {
@@ -46,7 +48,7 @@ const DropdownItem = ({ icon: Icon, children, onClick }: DropdownItemProps) => {
   );
 };
 
-export default function HeaderDashboard({ title = "Dashboard", userName = "Admin User" }: HeaderDashboardProps) {
+export default function HeaderDashboard({ title = "Dashboard", userName = "Admin User", onToggleSidebar, isSidebarOpen }: HeaderDashboardProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const menuMobileRef = useRef<HTMLDivElement>(null);
@@ -76,11 +78,22 @@ export default function HeaderDashboard({ title = "Dashboard", userName = "Admin
 
   return (
     <header className="flex flex-col gap-3 border-b border-theme-border/10 bg-theme-panel px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-4 lg:py-4">
-      {/* Row 1 on mobile: title left, profile right */}
+      {/* Row 1 on mobile: hamburger + title left, profile right */}
       <div className="flex min-w-0 items-center justify-between gap-2 lg:w-1/4 lg:justify-start">
-        <h1 className="truncate text-xl font-bold uppercase tracking-[0.12em] text-theme-fg sm:text-2xl">
-          {title}
-        </h1>
+        <div className="flex min-w-0 items-center gap-2">
+          {/* Hamburger — mobile only */}
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            className="grid size-10 shrink-0 place-content-center rounded-lg text-theme-fg/60 transition hover:bg-theme-fg/5 hover:text-theme-fg lg:hidden"
+            aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+          >
+            <FiMenu className="h-5 w-5" />
+          </button>
+          <h1 className="truncate text-xl font-bold uppercase tracking-[0.12em] text-theme-fg sm:text-2xl">
+            {title}
+          </h1>
+        </div>
 
         {/* Profile — only visible on mobile/tablet, hidden on lg */}
         <div className="relative shrink-0 lg:hidden" ref={menuMobileRef}>

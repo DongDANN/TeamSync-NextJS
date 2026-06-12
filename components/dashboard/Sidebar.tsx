@@ -27,6 +27,8 @@ type SidebarProps = {
   selected?: SectionKey
   setSelected?: (section: SectionKey) => void
   onActiveTemplateChange?: (template: TemplateId) => void
+  isMobileOpen?: boolean
+  onMobileClose?: () => void
 }
 
 type OptionProps = {
@@ -61,7 +63,7 @@ const defaultProjects: Project[] = [
   { name: 'Mobile App', key: 'MA', template: 'scrum', lead: '', description: '', access: 'private' },
 ]
 
-const Sidebar = ({ selected: controlledSelected, setSelected: controlledSetSelected, onActiveTemplateChange }: SidebarProps) => {
+const Sidebar = ({ selected: controlledSelected, setSelected: controlledSetSelected, onActiveTemplateChange, isMobileOpen, onMobileClose }: SidebarProps) => {
   const [open, setOpen] = useState(true)
   const [internalSelected, setInternalSelected] = useState<SectionKey>('Summary')
   const [projects, setProjects] = useState<Project[]>(defaultProjects)
@@ -97,44 +99,83 @@ const Sidebar = ({ selected: controlledSelected, setSelected: controlledSetSelec
     onActiveTemplateChange?.(project.template)
   }
 
+  const handleNavClick = (section: SectionKey) => {
+    setSelected(section)
+    onMobileClose?.()
+  }
+
+  const navContent = (
+    <>
+      <TitleSection
+        open={open}
+        activeProject={activeProject}
+        projects={projects}
+        isProjectMenuOpen={isProjectMenuOpen}
+        setIsProjectMenuOpen={setIsProjectMenuOpen}
+        onSelectProject={handleSelectProject}
+        onOpenNewProject={() => setShowNewProjectModal(true)}
+      />
+
+      <div className="flex-1 space-y-1 overflow-y-auto">
+        {visibleSections.map((section) => (
+          <Option
+            key={section}
+            Icon={SECTION_ICONS[section]}
+            title={section}
+            selected={selected}
+            setSelected={handleNavClick}
+            open={open}
+          />
+        ))}
+      </div>
+
+      <ThemeToggle
+        open={open}
+        showPicker={showThemePicker}
+        setShowPicker={setShowThemePicker}
+        themeId={themeId}
+        themes={themes}
+        onSelect={(id) => { setTheme(id); setShowThemePicker(false) }}
+      />
+    </>
+  )
+
   return (
     <>
+      {/* Mobile drawer overlay */}
+      {isMobileOpen && (
+        <div className="fixed inset-0 z-30 lg:hidden" onClick={onMobileClose}>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/20"
+          />
+          {/* Drawer */}
+          <motion.aside
+            initial={{ x: -300 }}
+            animate={{ x: 0 }}
+            exit={{ x: -300 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            onClick={(e) => e.stopPropagation()}
+            className="absolute left-0 top-0 flex h-screen w-[280px] flex-col overflow-hidden border-r border-theme-border/10 bg-theme-panel p-3 shadow-xl"
+          >
+            {navContent}
+            {/* Mobile: hide closes the drawer */}
+            <ToggleClose open={open} setOpen={setOpen} onCloseDrawer={onMobileClose} />
+          </motion.aside>
+        </div>
+      )}
+
+      {/* Desktop sidebar — hidden on mobile, sticky inline on lg+ */}
       <motion.nav
         layout
-        className="sticky top-0 z-20 flex h-screen shrink-0 flex-col overflow-hidden border-r border-theme-border/10 bg-theme-panel p-3"
+        className="sticky top-0 z-20 hidden h-screen shrink-0 flex-col overflow-hidden border-r border-theme-border/10 bg-theme-panel p-3 lg:flex"
         style={{ width: open ? '225px' : 'fit-content' }}
       >
-        <TitleSection
-          open={open}
-          activeProject={activeProject}
-          projects={projects}
-          isProjectMenuOpen={isProjectMenuOpen}
-          setIsProjectMenuOpen={setIsProjectMenuOpen}
-          onSelectProject={handleSelectProject}
-          onOpenNewProject={() => setShowNewProjectModal(true)}
-        />
-
-        <div className="flex-1 space-y-1 overflow-y-auto">
-          {visibleSections.map((section) => (
-            <Option
-              key={section}
-              Icon={SECTION_ICONS[section]}
-              title={section}
-              selected={selected}
-              setSelected={setSelected}
-              open={open}
-            />
-          ))}
-        </div>
-
-        <ThemeToggle
-          open={open}
-          showPicker={showThemePicker}
-          setShowPicker={setShowThemePicker}
-          themeId={themeId}
-          themes={themes}
-          onSelect={(id) => { setTheme(id); setShowThemePicker(false) }}
-        />
+        {navContent}
+        {/* Desktop: hide toggles collapse as before */}
         <ToggleClose open={open} setOpen={setOpen} />
       </motion.nav>
 
@@ -396,13 +437,14 @@ const ThemeToggle = ({ open, showPicker, setShowPicker, themeId, themes, onSelec
 type ToggleCloseProps = {
   open: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  onCloseDrawer?: () => void
 }
 
-const ToggleClose = ({ open, setOpen }: ToggleCloseProps) => {
+const ToggleClose = ({ open, setOpen, onCloseDrawer }: ToggleCloseProps) => {
   return (
     <motion.button
       layout
-      onClick={() => setOpen((pv) => !pv)}
+      onClick={() => onCloseDrawer ? onCloseDrawer() : setOpen((pv) => !pv)}
       className="border-t border-theme-border/10 transition-colors hover:bg-theme-fg/5"
     >
       <div className="flex items-center p-2">
